@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayEase</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/pickmeup.css">
+    <link rel="stylesheet" href="css/handle-counter.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+    <header class="tm-header">
+        <img class="tm-logo" src="images/logo.png" alt="StayEase">
+        <nav class="tm-nav">
+        <div>
+            <ul>
+                <li class="tm-list"><a href="index.html">Home</a></li>
+                <li class="tm-list"><a href="explore.html">Explore</a></li>
+                <li class="tm-list"><a href="rooms.html">Rooms</a></li>
+                <li class="tm-list"><a href="bb.html">Booking</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        </nav>
+    </header>
+
+    <section class="tm-main">
+        <h1>Booking</h1>
+    </section>
+
+    <section class="tm-booking">
+        <form id="bookingForm">
+            <div class="tm-form1">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="E-mail" required>
+
+                <label for="rooms">Room Type</label>
+                <select name="Rooms" id="rooms">
+                    <option value="luxurys">Luxury Suite</option>
+                    <option value="deluxs">Delux Suite</option>
+                    <option value="premiers">Premier Suite</option>
+                    <option value="Luxuryr">Luxury Room</option>
+                    <option value="deluxr">Delux Room</option>
+                    <option value="premierr">Premier Room</option>
+                </select>
+
+                <div class="tm-num1">
+                    <label for="number1">Number of Rooms</label><br/>
+                    <button type="button" class="counter-minus btn btn-primary">-</button>
+                    <input type="number" name="number1" id="number1" value="1" min="1">
+                    <button type="button" class="counter-plus btn btn-primary">+</button>
+                </div>
+
+                <div class="tm-num2">
+                    <label for="number2">Number of Guests</label><br/>
+                    <button type="button" class="counter-minus btn btn-primary">-</button>
+                    <input type="number" name="number2" id="number2" value="1" min="1">
+                    <button type="button" class="counter-plus btn btn-primary">+</button>
+                </div>
+            </div>
+
+            <div class="vertical-line"></div>
+            <div class="tm-form2">
+                <div class="tm-cl">
+                    <div class="date-inputs">
+                        <div class="date-box">
+                            <label for="arrival-date" class="date-label">Arrival Date</label>
+                            <input type="date" id="arrival-date" name="date1" required>
+                        </div>
+                        <div class="date-box">
+                            <label for="departure-date" class="date-label">Departure Date</label>
+                            <input type="date" id="departure-date" name="date2" required>
+                        </div>
+                    </div>
+                    <input type="submit" id="sub" value="Proceed">
+                </div>
+            </div>
+        </form>
+
+        <script>
+            document.getElementById("bookingForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const bookingData = {
+                    name: document.querySelector('input[name="name"]').value,
+                    email: document.querySelector('input[name="email"]').value,
+                    roomType: document.querySelector('select[name="Rooms"]').value,
+                    numberOfRooms: parseInt(document.querySelector('input[name="number1"]').value),
+                    numberOfGuests: parseInt(document.querySelector('input[name="number2"]').value),
+                    arrivalDate: document.querySelector('input[name="date1"]').value,
+                    departureDate: document.querySelector('input[name="date2"]').value,
+                };
+
+                fetch("http://localhost:8080/api/bookings", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(bookingData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Booking successful!");
+                        return response.json();
+                    } else {
+                        return response.json().then(error => {
+                            throw new Error(error.message || "Failed to submit booking.");
+                        });
+                    }
+                })
+                .then(data => {
+                    console.log("Booking response:", data);
+                })
+                .catch(error => {
+                    alert("Error occurred: " + error.message);
+                    console.error("Error:", error);
+                });
+            });
+        </script>
+    </section>
+
+    <footer class="tm-footer">
+        <!-- Footer content as needed -->
+    </footer>
+</body>
+</html>
